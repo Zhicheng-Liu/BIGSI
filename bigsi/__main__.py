@@ -125,8 +125,11 @@ class bigsi(object):
             outfile=outfile,
             kmers=extract_kmers_from_ctx(ctx, config["k"]),
         )
+        return {"result": "generated bloom filters for {} with config {}".format(ctx, config)}
+
 
     @hug.object.cli
+    @hug.object.post("/merge_blooms")
     def merge_blooms(
         self,
         from_file: hug.types.text = None,
@@ -166,8 +169,11 @@ class bigsi(object):
                 num_cols_list.append(len(row[1].split(",")))
 
         merge_blooms(zip(input_path_list, num_cols_list), num_rows, out_file)
+        return {"result": "merged bloom filters in {}".format(out_file)}
+
 
     @hug.object.cli
+    @hug.object.post("/large_build")
     def large_build(
         self,
         from_file: hug.types.text = None,
@@ -207,6 +213,8 @@ class bigsi(object):
                 sample_list.extend(row[1].split(","))
 
         large_build(config, input_path_list, num_cols_list, sample_list)
+        return {"result": "built bigsi index for samples in {} with config {}".format(from_file, config)}
+
 
     @hug.object.cli
     @hug.object.post("/build", output_format=hug.output_format.pretty_json)
