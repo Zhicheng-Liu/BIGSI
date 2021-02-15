@@ -1,10 +1,14 @@
 import logging
 import tempfile
 import subprocess
+from os import getenv
 from pyfasta import Fasta
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+
+BACKGROUND_VARIANTS_DB_PATH = getenv("background-variants-db-path", "mongodb://background-variants-db-service/atlas-mtb")
+BACKGROUND_VARIANTS_DB_NAME = getenv("background-variants-db-name", "mtb")
 
 
 def flatten(l):
@@ -48,6 +52,10 @@ class BIGSIVariantSearch(object):
                 "mykrobe",
                 "variants",
                 "make-probes",
+                "--db_name",
+                BACKGROUND_VARIANTS_DB_NAME,
+                "--db_uri",
+                BACKGROUND_VARIANTS_DB_PATH,
                 "-k",
                 str(self.bigsi.kmer_size),
                 "-v",
@@ -85,6 +93,10 @@ class BIGSIAminoAcidMutationSearch(BIGSIVariantSearch):
                 "mykrobe",
                 "variants",
                 "make-probes",
+                "--db_name",
+                BACKGROUND_VARIANTS_DB_NAME,
+                "--db_uri",
+                BACKGROUND_VARIANTS_DB_PATH,
                 "-k",
                 str(self.bigsi.kmer_size),
                 "-v",
